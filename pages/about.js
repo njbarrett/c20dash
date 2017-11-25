@@ -1,5 +1,3 @@
-// pages/about.js
-
 import Layout from '../components/Layout.js'
 
 export default () => (
