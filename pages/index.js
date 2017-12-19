@@ -5,6 +5,22 @@ import fetch from 'isomorphic-unfetch'
 import fx from 'money'
 import accounting from 'accounting'
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import { withStyles } from 'material-ui/styles';
+import Card, { CardActions, CardContent } from 'material-ui/Card';
+import Button from 'material-ui/Button';
+import Typography from 'material-ui/Typography';
+import TextField from 'material-ui/TextField';
+import Grid from 'material-ui/Grid';
+
+const styles = theme => ({
+  card: {
+    minWidth: 275,
+  },
+  pos: {
+      marginBottom: 12,
+      color: theme.palette.text.secondary,
+  },
+});
 
 class Index extends React.Component {
 
@@ -48,44 +64,80 @@ class Index extends React.Component {
             return <p>Loading...</p>
         }
 
+        const { classes } = this.props;
         fx.rates = this.props.rates
         const usdValue = this.props.c20Data.nav_per_token * this.state.c20Tokens
 
-        const data = [
-              {name: 'Page A', uv: 4000, pv: 2400, amt: 2400},
-              {name: 'Page B', uv: 3000, pv: 1398, amt: 2210},
-              {name: 'Page C', uv: 2000, pv: 9800, amt: 2290},
-              {name: 'Page D', uv: 2780, pv: 3908, amt: 2000},
-              {name: 'Page E', uv: 1890, pv: 4800, amt: 2181},
-              {name: 'Page F', uv: 2390, pv: 3800, amt: 2500},
-              {name: 'Page G', uv: 3490, pv: 4300, amt: 2100},
-        ];
+        const InputProps = {
+          inputProps: {
+            step: 1,
+            onKeyUp: this.update.bind(this)
+          },
+        };
 
         return (
             <Layout>
-            <h1>Crypto20 Dashboard</h1>
+            <div style={{ padding: 20 }}>
+              <Grid container spacing={40}>
+              <Grid item xs>
+                  <Card>
+                    <CardContent>
+                      <Typography type="headline" component="h2">
+                        C20 Owned
+                      </Typography>
+                      <Typography component="div">
+                          <TextField id="c20_owned" type="number" inputRef={(c20) => { this.c20 = c20 }} InputProps={InputProps} />
+                      </Typography>
+                    </CardContent>
+                  </Card>
+              </Grid>
+              <Grid item xs>
+                  <Card>
+                    <CardContent>
+                      <Typography type="headline" component="h2">
+                        ${accounting.toFixed(usdValue, 2)}
+                      </Typography>
+                      <Typography className={classes.pos}>$USD Value of Your Tokens</Typography>
+                    </CardContent>
+                  </Card>
+              </Grid>
+              <Grid item xs>
+                  <Card>
+                    <CardContent>
+                      <Typography type="headline" component="h2">
+                        ${accounting.toFixed(fx(usdValue).from('USD').to('AUD'), 2)}
+                      </Typography>
+                      <Typography className={classes.pos}>$AUD Value of Your Tokens</Typography>
+                    </CardContent>
+                  </Card>
+              </Grid>
+              <Grid item xs>
+                  <Card>
+                    <CardContent>
+                      <Typography type="headline" component="h2">
+                        ${accounting.toFixed(this.props.c20Data.nav_per_token, 3)}
+                      </Typography>
+                      <Typography className={classes.pos}>Net Asset Value $USD per Token</Typography>
+                    </CardContent>
+                  </Card>
+              </Grid>
+              <Grid item xs>
+                  <Card>
+                    <CardContent>
+                      <Typography type="headline" component="h2">
+                        ${accounting.toFixed(fx(this.props.c20Data.nav_per_token).from('USD').to('AUD'), 3)}
+                      </Typography>
+                      <Typography className={classes.pos}>Net Asset Value $AUD per Token</Typography>
+                    </CardContent>
+                  </Card>
+              </Grid>
+              </Grid>
+            </div>
 
-            <label>Number of C20 Tokens owned:</label>
-            <input type="text" ref={(c20) => { this.c20 = c20 }} onKeyUp={this.update.bind(this)} />
-
-            <ul>
-                <li>USD Net Asset Value (per token): ${accounting.toFixed(this.props.c20Data.nav_per_token, 3)}</li>
-                <li>USD Value of your Tokens: ${accounting.toFixed(usdValue, 2)}</li>
-                <li>AUD Value of your Tokens: ${accounting.toFixed(fx(usdValue).from('USD').to('AUD'), 2)}</li>
-            </ul>
-
-            <AreaChart width={600} height={400} data={data}
-                margin={{top: 10, right: 30, left: 0, bottom: 0}}>
-                <XAxis dataKey="name"/>
-                <YAxis/>
-                <CartesianGrid strokeDasharray="3 3"/>
-                <Tooltip/>
-                <Area type='monotone' dataKey='uv' stroke='#8884d8' fill='#8884d8' />
-            </AreaChart>
 
             </Layout>
         );
     }
 }
 
-export default Index
+export default withStyles(styles)(Index);
