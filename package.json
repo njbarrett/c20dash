@@ -13,7 +13,9 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@amcharts/amcharts3-react": "^3.0.3",
         "accounting": "^0.4.1",
+        "amcharts3": "amcharts/amcharts3",
         "express": "^4.16.2",
         "isomorphic-unfetch": "^2.0.0",
         "material-ui": "^1.0.0-beta.22",

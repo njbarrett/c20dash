@@ -20,7 +20,7 @@ const Header = () => (
         <AppBar position="static" color="default">
           <Toolbar>
             <Typography type="title" color="inherit">
-              Crypto20 Dashboard
+              Wenmoon.fund
             </Typography>
           </Toolbar>
         </AppBar>
